@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>AI No-Show Rescue Demo - Interactive Demo</title>
+<meta property="og:title" content="AI No-Show Rescue Demo - Interactive Demo">
+<meta property="og:description" content="Interactive demo: an AI SMS reminder rescues an appointment before it becomes a no-show. Try it - confirm, reschedule or cancel and watch the AI save the booking.">
+<meta property="og:url" content="https://ai-no-show-rescue-demo-mr-bilal-alis-projects.vercel.app">
+<meta property="og:image" content="https://ai-no-show-rescue-demo-mr-bilal-alis-projects.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI No-Show Rescue Demo - Interactive Demo">
+<meta name="twitter:description" content="Interactive demo: an AI SMS reminder rescues an appointment before it becomes a no-show.">
+<meta name="twitter:image" content="https://ai-no-show-rescue-demo-mr-bilal-alis-projects.vercel.app/og-image.png">
+<meta name="description" content="Interactive demo: an AI SMS reminder rescues an appointment before it becomes a no-show. Try it - confirm, reschedule or cancel and watch the AI save the booking.">
+    <style>
+      :root {
+        --bg: #eef4ef;
+        --surface: #ffffff;
+        --surface-soft: #f4f8f4;
+        --ink: #16281f;
+        --ink-soft: #43564c;
+        --ink-faint: #6b7f74;
+        --green: #0d6b4d;
+        --green-dark: #095239;
+        --green-tint: #e2efe6;
+        --green-tint-strong: #cfe6d6;
+        --line: #d7e3da;
+        --bubble-ai: #eef3ee;
+        --bubble-user: #0d6b4d;
+        --bubble-user-ink: #ffffff;
+        --warn-bg: #fdf6e3;
+        --warn-line: #e8d48a;
+        --warn-ink: #6b5510;
+        --shadow: 0 10px 30px rgba(13, 60, 42, 0.10), 0 2px 6px rgba(13, 60, 42, 0.06);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101a14;
+          --surface: #1a2620;
+          --surface-soft: #212f27;
+          --ink: #e8f1ea;
+          --ink-soft: #b9cbc0;
+          --ink-faint: #8ba294;
+          --green: #3fae85;
+          --green-dark: #7ccfa9;
+          --green-tint: #22382c;
+          --green-tint-strong: #2b4a38;
+          --line: #31453a;
+          --bubble-ai: #26352c;
+          --bubble-user: #0d6b4d;
+          --bubble-user-ink: #ffffff;
+          --warn-bg: #2e2a18;
+          --warn-line: #6b5d24;
+          --warn-ink: #e3cf8a;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.55;
+        font-size: 16px;
+      }
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.75rem; }
+
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 28px 18px 40px;
+      }
+
+      /* ---------- Header ---------- */
+      .eyebrow {
+        margin: 0 0 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--green);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.65rem;
+        line-height: 1.25;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .subhead {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 1rem;
+      }
+
+      /* ---------- Cards ---------- */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        margin-top: 20px;
+      }
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .card p { margin: 0 0 12px; color: var(--ink-soft); }
+      .card p:last-child { margin-bottom: 0; }
+
+      .sim-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--warn-bg);
+        border: 1px solid var(--warn-line);
+        color: var(--warn-ink);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .sim-label .dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--warn-ink);
+        flex: none;
+      }
+
+      .scenario {
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin: 14px 0 18px;
+        font-size: 0.95rem;
+      }
+      .scenario dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; }
+      .scenario dt { font-weight: 600; color: var(--ink); }
+      .scenario dd { margin: 0; color: var(--ink-soft); }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        padding: 10px 22px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .btn-primary { background: var(--green); color: #fff; }
+      .btn-primary:hover, .btn-primary:focus-visible { background: var(--green-dark); }
+      .btn-ghost {
+        background: transparent;
+        color: var(--green);
+        border-color: var(--green);
+      }
+      .btn-ghost:hover, .btn-ghost:focus-visible { background: var(--green-tint); }
+      .btn-block { width: 100%; }
+
+      /* ---------- Phone ---------- */
+      .phone {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-top: 20px;
+      }
+      .phone-head {
+        background: var(--green);
+        color: #fff;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .avatar {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 0.95rem; flex: none;
+      }
+      .phone-head .who { line-height: 1.3; min-width: 0; }
+      .phone-head .name { font-weight: 700; font-size: 0.98rem; }
+      .phone-head .num { font-size: 0.82rem; opacity: 0.85; }
+      .timer-chip {
+        margin-left: auto;
+        flex: none;
+        background: rgba(255,255,255,0.16);
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 0.85rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+      .thread {
+        padding: 18px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-height: 120px;
+      }
+      .day-stamp {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--ink-faint);
+        margin: 2px 0 10px;
+      }
+      .msg { max-width: 82%; display: flex; flex-direction: column; }
+      .msg .bubble {
+        padding: 10px 14px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        line-height: 1.45;
+        overflow-wrap: break-word;
+      }
+      .msg .stamp {
+        font-size: 0.72rem;
+        color: var(--ink-faint);
+        margin: 3px 4px 8px;
+      }
+      .msg.ai { align-self: flex-start; align-items: flex-start; }
+      .msg.ai .bubble { background: var(--bubble-ai); color: var(--ink); border-bottom-left-radius: 4px; }
+      .msg.user { align-self: flex-end; align-items: flex-end; }
+      .msg.user .bubble { background: var(--bubble-user); color: var(--bubble-user-ink); border-bottom-right-radius: 4px; }
+      .msg.user .stamp { text-align: right; }
+
+      .sys-note {
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--green-tint);
+        color: var(--green-dark);
+        border-radius: 999px;
+        padding: 5px 13px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 6px 0 10px;
+        text-align: center;
+      }
+      .sys-note svg { flex: none; }
+
+      .typing {
+        align-self: flex-start;
+        background: var(--bubble-ai);
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        padding: 12px 16px;
+        display: inline-flex;
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+      .typing span {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: var(--ink-faint);
+        animation: blink 1.1s infinite;
+      }
+      .typing span:nth-child(2) { animation-delay: 0.18s; }
+      .typing span:nth-child(3) { animation-delay: 0.36s; }
+      @keyframes blink {
+        0%, 60%, 100% { opacity: 0.25; }
+        30% { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .typing span { animation: none; opacity: 0.6; }
+      }
+
+      /* ---------- Choices ---------- */
+      .choices {
+        border-top: 1px solid var(--line);
+        padding: 14px 16px 16px;
+        background: var(--surface-soft);
+      }
+      .choices .prompt {
+        margin: 0 0 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+      }
+      .choice-row { display: flex; flex-wrap: wrap; gap: 10px; }
+      .choice-btn {
+        font: inherit;
+        font-weight: 600;
+        font-size: 0.95rem;
+        background: var(--surface);
+        color: var(--green);
+        border: 1.5px solid var(--green);
+        border-radius: 999px;
+        padding: 9px 18px;
+        cursor: pointer;
+        flex: 1 1 auto;
+      }
+      .choice-btn:hover, .choice-btn:focus-visible { background: var(--green-tint); }
+      .choice-btn:disabled { opacity: 0.45; cursor: default; }
+      .choice-btn:disabled:hover { background: var(--surface); }
+
+      /* ---------- Outcome ---------- */
+      .outcome {
+        border: 1.5px solid var(--green);
+      }
+      .outcome .result-line {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .outcome .result-line svg { flex: none; margin-top: 3px; }
+      .outcome h2 { margin: 0; }
+      .outcome .detail { font-size: 1rem; color: var(--ink); margin-bottom: 14px; }
+      .did {
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+      }
+      .did h3 {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .did ul { margin: 0; padding: 0; list-style: none; }
+      .did li {
+        display: flex;
+        gap: 9px;
+        align-items: flex-start;
+        padding: 3px 0;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+      }
+      .did li svg { flex: none; margin-top: 4px; }
+      .resolved {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+        font-size: 0.95rem;
+        color: var(--ink-soft);
+      }
+      .resolved strong {
+        color: var(--green);
+        font-size: 1.3rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .cta-note {
+        text-align: center;
+        margin: 12px 0 0;
+        font-size: 0.92rem;
+      }
+      .cta-note a { color: var(--green); font-weight: 600; }
+      .start-over-row { margin-top: 16px; text-align: center; }
+
+      footer {
+        margin-top: 28px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-faint);
+        font-size: 0.85rem;
+      }
+      footer p { margin: 0 0 6px; }
+      footer p:last-child { margin-bottom: 0; }
+
+      [hidden] { display: none !important; }
+
+      @media (max-width: 420px) {
+        .wrap { padding: 22px 12px 32px; }
+        .card { padding: 18px 16px; }
+        h1 { font-size: 1.45rem; }
+        .msg { max-width: 88%; }
+        .choice-btn { flex: 1 1 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <p class="eyebrow">Bilal Ali — AI Automation Expert</p>
+        <h1>AI voice agents that answer every lead in 60 seconds</h1>
+        <p class="subhead">This demo covers the follow-up job: an AI that rescues appointments before they turn into no-shows. Try it yourself — you play the patient.</p>
+      </header>
+
+      <!-- Step 1: Intro -->
+      <section class="card" id="introCard" aria-labelledby="introTitle">
+        <span class="sim-label"><span class="dot" aria-hidden="true"></span>Scripted simulation — no real messages are sent</span>
+        <h2 id="introTitle">The no-show rescue, in under 90 seconds</h2>
+        <p>A dental cleaning is booked for tomorrow, and the patient has not confirmed. Watch the AI send a reminder, handle the reply, and protect the appointment — then pick the reply yourself.</p>
+        <div class="scenario">
+          <dl>
+            <dt>Business</dt><dd>Willow Creek Dental Studio (fictional)</dd>
+            <dt>Patient</dt><dd>Alex Morgan — that is you</dd>
+            <dt>Appointment</dt><dd>Cleaning, tomorrow at 10:00 AM with Dr. Patel</dd>
+            <dt>Risk</dt><dd>Unconfirmed, one day out — a likely no-show</dd>
+          </dl>
+        </div>
+        <button class="btn btn-primary btn-block" id="startBtn" type="button">Start the demo</button>
+      </section>
+
+      <!-- Step 2: Phone thread -->
+      <section class="phone" id="phoneSection" hidden aria-label="Simulated text message thread">
+        <div class="phone-head">
+          <div class="avatar" aria-hidden="true">WC</div>
+          <div class="who">
+            <div class="name">Willow Creek Dental Studio</div>
+            <div class="num">Text message · (555) 014-2287</div>
+          </div>
+          <div class="timer-chip" id="timerChip" aria-label="Elapsed time">0.0s</div>
+        </div>
+        <div class="thread" id="thread" aria-live="polite"></div>
+        <div class="choices" id="choices" hidden>
+          <p class="prompt" id="choicePrompt"></p>
+          <div class="choice-row" id="choiceRow"></div>
+        </div>
+      </section>
+
+      <!-- Step 4: Outcome -->
+      <section class="card outcome" id="outcomeCard" hidden aria-labelledby="outcomeTitle">
+        <div class="result-line">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#0d6b4d"/><path d="M8 12.5l2.6 2.6L16 9.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h2 id="outcomeTitle">Appointment saved</h2>
+        </div>
+        <p class="detail" id="outcomeDetail"></p>
+        <div class="did">
+          <h3>What the AI did</h3>
+          <ul id="didList"></ul>
+        </div>
+        <p class="resolved">
+          Resolved in <strong id="resolvedTime">0s</strong>
+          <span>(total demo time: <span id="liveTime">0.0s</span> and counting)</span>
+        </p>
+        <a class="btn btn-primary btn-block" href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">Book a discovery call</a>
+        <p class="cta-note">Prefer to look first? <a href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">See available times for a discovery call</a></p>
+        <div class="start-over-row">
+          <button class="btn btn-ghost" id="startOverBtn" type="button">Start over</button>
+        </div>
+      </section>
+
+      <footer>
+        <p>Scripted simulation: Willow Creek Dental Studio and Alex Morgan are fictional, the phone number is a fake 555 number, and no real messages, calls, or bookings are made. The conversation above is pre-written to show how the workflow runs.</p>
+        <p>Demo by Bilal Ali, AI Automation Expert — built for US small businesses and agencies.</p>
+      </footer>
+    </main>
+
+    <script>
+      (function () {
+        var startBtn = document.getElementById('startBtn');
+        var startOverBtn = document.getElementById('startOverBtn');
+        var introCard = document.getElementById('introCard');
+        var phoneSection = document.getElementById('phoneSection');
+        var thread = document.getElementById('thread');
+        var choices = document.getElementById('choices');
+        var choicePrompt = document.getElementById('choicePrompt');
+        var choiceRow = document.getElementById('choiceRow');
+        var outcomeCard = document.getElementById('outcomeCard');
+        var outcomeTitle = document.getElementById('outcomeTitle');
+        var outcomeDetail = document.getElementById('outcomeDetail');
+        var didList = document.getElementById('didList');
+        var resolvedTime = document.getElementById('resolvedTime');
+        var liveTime = document.getElementById('liveTime');
+        var timerChip = document.getElementById('timerChip');
+
+        var tickCount = 0;
+        var timerId = null;
+        var timers = [];
+        var finished = false;
+
+        var SLOTS = ['Fri 2:00 PM', 'Mon 9:30 AM', 'Tue 11:00 AM'];
+
+        function nowStamp() {
+          var d = new Date();
+          var h = d.getHours();
+          var m = d.getMinutes();
+          var ampm = h >= 12 ? 'PM' : 'AM';
+          h = h % 12; if (h === 0) h = 12;
+          return 'Today ' + h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+        }
+
+        function later(fn, ms) {
+          var id = setTimeout(fn, ms);
+          timers.push(id);
+          return id;
+        }
+
+        function clearTimers() {
+          timers.forEach(function (id) { clearTimeout(id); });
+          timers = [];
+        }
+
+        function elapsed() {
+          return tickCount / 10;
+        }
+
+        function tick() {
+          tickCount++;
+          var t = elapsed().toFixed(1) + 's';
+          timerChip.textContent = t;
+          liveTime.textContent = t;
+        }
+
+        function startTimer() {
+          tickCount = 0;
+          timerChip.textContent = '0.0s';
+          liveTime.textContent = '0.0s';
+          timerId = setInterval(tick, 100);
+        }
+
+        function stopTimer() {
+          if (timerId) { clearInterval(timerId); timerId = null; }
+        }
+
+        function scrollToEl(el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function addMessage(who, text) {
+          var wrap = document.createElement('div');
+          wrap.className = 'msg ' + who;
+          var bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.textContent = text;
+          var stamp = document.createElement('div');
+          stamp.className = 'stamp';
+          stamp.textContent = nowStamp();
+          wrap.appendChild(bubble);
+          wrap.appendChild(stamp);
+          thread.appendChild(wrap);
+          scrollToEl(wrap);
+          return wrap;
+        }
+
+        function addSysNote(text) {
+          var note = document.createElement('div');
+          note.className = 'sys-note';
+          note.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          var span = document.createElement('span');
+          span.textContent = text;
+          note.appendChild(span);
+          thread.appendChild(note);
+          scrollToEl(note);
+        }
+
+        function showTyping() {
+          var t = document.createElement('div');
+          t.className = 'typing';
+          t.setAttribute('aria-hidden', 'true');
+          t.innerHTML = '<span></span><span></span><span></span>';
+          thread.appendChild(t);
+          scrollToEl(t);
+          return t;
+        }
+
+        function aiSay(text, delay, after) {
+          var typing = showTyping();
+          later(function () {
+            typing.remove();
+            addMessage('ai', text);
+            if (after) later(after, 350);
+          }, delay || 1100);
+        }
+
+        function setChoices(prompt, options) {
+          choicePrompt.textContent = prompt;
+          choiceRow.innerHTML = '';
+          options.forEach(function (opt) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'choice-btn';
+            b.textContent = opt.label;
+            b.addEventListener('click', function () {
+              disableChoices();
+              opt.onPick();
+            });
+            choiceRow.appendChild(b);
+          });
+          choices.hidden = false;
+          scrollToEl(choices);
+        }
+
+        function disableChoices() {
+          var btns = choiceRow.querySelectorAll('button');
+          btns.forEach(function (b) { b.disabled = true; });
+          choices.hidden = true;
+        }
+
+        function finish(title, detail, didItems) {
+          finished = true;
+          outcomeTitle.textContent = title;
+          outcomeDetail.textContent = detail;
+          didList.innerHTML = '';
+          didItems.forEach(function (item) {
+            var li = document.createElement('li');
+            li.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0d6b4d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            var span = document.createElement('span');
+            span.textContent = item;
+            li.appendChild(span);
+            didList.appendChild(li);
+          });
+          resolvedTime.textContent = Math.round(elapsed()) + 's';
+          outcomeCard.hidden = false;
+          later(function () { scrollToEl(outcomeCard); }, 150);
+        }
+
+        var DID_BASE = [
+          'Sent the reminder by text, one day before the visit',
+          'Understood the reply and acted on it right away',
+          'Updated the practice calendar automatically',
+          'No staff time used — no phone tag, no front-desk follow-up'
+        ];
+
+        function slotChoices(mode) {
+          setChoices('Pick a new time:', SLOTS.map(function (slot) {
+            return {
+              label: slot,
+              onPick: function () {
+                addMessage('user', slot);
+                aiSay('Done, Alex. Your cleaning is now booked for ' + slot + ' with Dr. Patel. We will send a reminder the day before.', 1200, function () {
+                  addSysNote('Calendar updated — new appointment booked');
+                  later(function () {
+                    if (mode === 'reschedule') {
+                      finish(
+                        'Appointment saved',
+                        'The cleaning was moved to ' + slot + ' with Dr. Patel. The original slot was released in time to offer to another patient, and the new one is confirmed — the chair stays filled either way.',
+                        DID_BASE
+                      );
+                    } else {
+                      finish(
+                        'Appointment rebooked',
+                        'Instead of a lost booking, Alex has a new cleaning on ' + slot + ' with Dr. Patel. The practice keeps the patient and the revenue, with no follow-up calls from staff.',
+                        DID_BASE
+                      );
+                    }
+                  }, 700);
+                });
+              }
+            };
+          }));
+        }
+
+        function branchConfirm() {
+          addMessage('user', '1');
+          aiSay('You are confirmed, Alex. Cleaning tomorrow at 10:00 AM with Dr. Patel. Please arrive 10 minutes early — see you then.', 1200, function () {
+            addSysNote('Calendar updated — appointment confirmed');
+            later(function () {
+              finish(
+                'Appointment saved',
+                'Alex confirmed the cleaning tomorrow at 10:00 AM with Dr. Patel. The no-show risk is removed and the chair time is protected — before the practice had to chase anyone.',
+                DID_BASE
+              );
+            }, 700);
+          });
+        }
+
+        function branchReschedule() {
+          addMessage('user', '2');
+          aiSay('No problem, Alex. Here are the next open slots for a cleaning with Dr. Patel. Pick the one that suits you.', 1200, function () {
+            slotChoices('reschedule');
+          });
+        }
+
+        function branchCancel() {
+          addMessage('user', '3');
+          aiSay('Your cleaning tomorrow at 10:00 AM is cancelled, Alex. Before you go — would you like to hold a new time instead, so you do not lose your place?', 1200, function () {
+            addSysNote('Calendar updated — original appointment cancelled');
+            setChoices('Your move:', [
+              {
+                label: 'Book a new time',
+                onPick: function () {
+                  aiSay('Good call. Here are the next open slots with Dr. Patel — pick one and I will book it now.', 1000, function () {
+                    slotChoices('cancel');
+                  });
+                }
+              }
+            ]);
+          });
+        }
+
+        function startDemo() {
+          introCard.hidden = true;
+          outcomeCard.hidden = true;
+          finished = false;
+          thread.innerHTML = '';
+          choices.hidden = true;
+          phoneSection.hidden = false;
+          startTimer();
+          var day = document.createElement('div');
+          day.className = 'day-stamp';
+          day.textContent = 'Text message — today';
+          thread.appendChild(day);
+          later(function () {
+            aiSay('Hi Alex, this is Willow Creek Dental Studio. Reminder: your cleaning is tomorrow at 10:00 AM with Dr. Patel. Reply 1 to confirm, 2 to reschedule, 3 to cancel.', 1300, function () {
+              setChoices('You are Alex. How do you reply?', [
+                { label: 'Reply 1 — Confirm', onPick: branchConfirm },
+                { label: 'Reply 2 — Reschedule', onPick: branchReschedule },
+                { label: 'Reply 3 — Cancel', onPick: branchCancel }
+              ]);
+            });
+          }, 500);
+          scrollToEl(phoneSection);
+        }
+
+        function resetDemo() {
+          clearTimers();
+          stopTimer();
+          tickCount = 0;
+          finished = false;
+          thread.innerHTML = '';
+          choices.hidden = true;
+          phoneSection.hidden = true;
+          outcomeCard.hidden = true;
+          timerChip.textContent = '0.0s';
+          introCard.hidden = false;
+          scrollToEl(introCard);
+          startBtn.focus();
+        }
+
+        startBtn.addEventListener('click', startDemo);
+        startOverBtn.addEventListener('click', resetDemo);
+      })();
+    </script>
+  </body>
+</html>
