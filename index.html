@@ -20,41 +20,41 @@
 <meta name="description" content="Interactive demo: an AI SMS reminder rescues an appointment before it becomes a no-show. Try it - confirm, reschedule or cancel and watch the AI save the booking.">
     <style>
       :root {
-        --bg: #eef4ef;
+        --bg: #fcfcff;
         --surface: #ffffff;
-        --surface-soft: #f4f8f4;
-        --ink: #16281f;
-        --ink-soft: #43564c;
-        --ink-faint: #6b7f74;
-        --green: #0d6b4d;
-        --green-dark: #095239;
-        --green-tint: #e2efe6;
-        --green-tint-strong: #cfe6d6;
-        --line: #d7e3da;
-        --bubble-ai: #eef3ee;
-        --bubble-user: #0d6b4d;
+        --surface-soft: #eef0fe;
+        --ink: #10101e;
+        --ink-soft: #4c4c60;
+        --ink-faint: #7a7a94;
+        --green: #2b2bd0;
+        --green-dark: #2323b8;
+        --green-tint: #e6e8fd;
+        --green-tint-strong: #ccd0fa;
+        --line: #dddff2;
+        --bubble-ai: #eef0fe;
+        --bubble-user: #2b2bd0;
         --bubble-user-ink: #ffffff;
         --warn-bg: #fdf6e3;
         --warn-line: #e8d48a;
         --warn-ink: #6b5510;
-        --shadow: 0 10px 30px rgba(13, 60, 42, 0.10), 0 2px 6px rgba(13, 60, 42, 0.06);
+        --shadow: 0 10px 30px rgba(27, 27, 120, 0.10), 0 2px 6px rgba(27, 27, 120, 0.06);
         --radius: 14px;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #101a14;
-          --surface: #1a2620;
-          --surface-soft: #212f27;
-          --ink: #e8f1ea;
-          --ink-soft: #b9cbc0;
-          --ink-faint: #8ba294;
-          --green: #3fae85;
-          --green-dark: #7ccfa9;
-          --green-tint: #22382c;
-          --green-tint-strong: #2b4a38;
-          --line: #31453a;
-          --bubble-ai: #26352c;
-          --bubble-user: #0d6b4d;
+          --bg: #0c0c18;
+          --surface: #15152a;
+          --surface-soft: #1d1d38;
+          --ink: #ececf6;
+          --ink-soft: #b9b9d0;
+          --ink-faint: #8a8aa8;
+          --green: #7d7df7;
+          --green-dark: #a5a5ff;
+          --green-tint: #23234a;
+          --green-tint-strong: #2e2e63;
+          --line: #2c2c4e;
+          --bubble-ai: #1d1d38;
+          --bubble-user: #2b2bd0;
           --bubble-user-ink: #ffffff;
           --warn-bg: #2e2a18;
           --warn-line: #6b5d24;
@@ -168,6 +168,8 @@
       }
       .btn-primary { background: var(--green); color: #fff; }
       .btn-primary:hover, .btn-primary:focus-visible { background: var(--green-dark); }
+      .btn-cta { background: #f76707; color: #fff; }
+      .btn-cta:hover, .btn-cta:focus-visible { background: #d9480f; }
       .btn-ghost {
         background: transparent;
         color: var(--green);
@@ -437,7 +439,7 @@
       <!-- Step 4: Outcome -->
       <section class="card outcome" id="outcomeCard" hidden aria-labelledby="outcomeTitle">
         <div class="result-line">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#0d6b4d"/><path d="M8 12.5l2.6 2.6L16 9.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#2b2bd0"/><path d="M8 12.5l2.6 2.6L16 9.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <h2 id="outcomeTitle">Appointment saved</h2>
         </div>
         <p class="detail" id="outcomeDetail"></p>
@@ -449,7 +451,7 @@
           Resolved in <strong id="resolvedTime">0s</strong>
           <span>(total demo time: <span id="liveTime">0.0s</span> and counting)</span>
         </p>
-        <a class="btn btn-primary btn-block" href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">Book a discovery call</a>
+        <a class="btn btn-cta btn-block" href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">Book a discovery call</a>
         <p class="cta-note">Prefer to look first? <a href="https://cal.com/mrbilalali/discovery-call" target="_blank" rel="noopener">See available times for a discovery call</a></p>
         <div class="start-over-row">
           <button class="btn btn-ghost" id="startOverBtn" type="button">Start over</button>
@@ -610,7 +612,7 @@
           didList.innerHTML = '';
           didItems.forEach(function (item) {
             var li = document.createElement('li');
-            li.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0d6b4d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            li.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#2b2bd0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
             var span = document.createElement('span');
             span.textContent = item;
             li.appendChild(span);
